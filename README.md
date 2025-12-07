@@ -76,7 +76,7 @@ Here are three primary URLs used for testing:
 
 1. **https://en.wikipedia.org/wiki/Artificial_intelligence** - Scrapes the comprehensive article content about artificial intelligence, including sections on history, applications, and technical details.
 2. **https://vercel.com/** - Scrapes the homepage content including product features, pricing information, and marketing copy from this modern JavaScript-rendered site.
-3. **https://news.ycombinator.com/** - Scrapes the front page news articles, story titles, links, and discussion metadata from the Hacker News community platform.
+3. **https://www.formula1.com/** - Scrapes the latest Formula 1 news articles, driver/team updates, race insights, and also extracts associated image URLs from the official F1 website.
 
 ## Project Structure
 
