@@ -5,9 +5,12 @@ REM Windows batch script version
 
 echo Setting up project...
 
-REM Check if uv is installed
+REM Find or install uv
+set "UV_CMD="
 where uv >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
+if %ERRORLEVEL% EQU 0 (
+    set "UV_CMD=uv"
+) else (
     echo uv is not installed. Installing uv automatically...
     echo This may take a minute...
     echo.
@@ -15,26 +18,28 @@ if %ERRORLEVEL% NEQ 0 (
     REM Install uv using PowerShell
     powershell -ExecutionPolicy Bypass -Command "Invoke-RestMethod https://astral.sh/uv/install.ps1 | Invoke-Expression"
     
-    REM Check common installation paths and add to PATH for this session
+    REM Check common installation paths
     if exist "%USERPROFILE%\.cargo\bin\uv.exe" (
-        set PATH=%USERPROFILE%\.cargo\bin;%PATH%
-        echo Added uv to PATH for this session.
+        set "UV_CMD=%USERPROFILE%\.cargo\bin\uv.exe"
+        echo Found uv at: %UV_CMD%
     ) else if exist "%USERPROFILE%\.local\bin\uv.exe" (
-        set PATH=%USERPROFILE%\.local\bin;%PATH%
-        echo Added uv to PATH for this session.
-    )
-    
-    REM Verify uv is now available
-    where uv >nul 2>&1
-    if %ERRORLEVEL% NEQ 0 (
-        echo.
-        echo Error: uv installation may have failed or uv is not in the expected location.
-        echo Please install uv manually:
-        echo   powershell -ExecutionPolicy Bypass -Command "Invoke-RestMethod https://astral.sh/uv/install.ps1 | Invoke-Expression"
-        echo Then close and reopen your terminal and run this script again.
-        echo.
-        pause
-        exit /b 1
+        set "UV_CMD=%USERPROFILE%\.local\bin\uv.exe"
+        echo Found uv at: %UV_CMD%
+    ) else (
+        REM Try checking PATH again after installation
+        where uv >nul 2>&1
+        if %ERRORLEVEL% EQU 0 (
+            set "UV_CMD=uv"
+        ) else (
+            echo.
+            echo Error: uv installation may have failed or uv is not in the expected location.
+            echo Please install uv manually:
+            echo   powershell -ExecutionPolicy Bypass -Command "Invoke-RestMethod https://astral.sh/uv/install.ps1 | Invoke-Expression"
+            echo Then close and reopen your terminal and run this script again.
+            echo.
+            pause
+            exit /b 1
+        )
     )
     
     echo uv has been successfully installed!
@@ -44,7 +49,7 @@ if %ERRORLEVEL% NEQ 0 (
 REM Create virtual environment using uv if it doesn't exist
 if not exist ".venv" (
     echo Creating virtual environment with uv...
-    uv venv
+    "%UV_CMD%" venv
     if %ERRORLEVEL% NEQ 0 (
         echo Error: Failed to create virtual environment with uv.
         exit /b 1
@@ -57,7 +62,7 @@ call .venv\Scripts\activate.bat
 
 REM Install Python dependencies
 echo Installing Python dependencies...
-uv pip install -r requirements.txt
+"%UV_CMD%" pip install -r requirements.txt
 
 REM Install Playwright browsers if needed
 echo Installing Playwright browsers...
@@ -81,4 +86,3 @@ REM Start the server
 echo Starting server on http://localhost:8000...
 echo.
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
-
