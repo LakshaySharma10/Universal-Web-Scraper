@@ -33,7 +33,18 @@ A full-stack application for scraping websites and viewing structured JSON outpu
    ./run.sh
    ```
 
-   On Windows, you can use Git Bash or WSL, or run the commands manually:
+   On Windows, simply run `run.bat`:
+   ```cmd
+   .\run.bat
+   ```
+   
+   The script will automatically:
+   - Install `uv` if it's not already installed
+   - Create a virtual environment
+   - Install all Python and frontend dependencies
+   - Start the server
+
+   Alternatively, you can use Git Bash/WSL with `run.sh`, or run the commands manually:
    ```powershell
    # Create virtual environment
    uv venv
@@ -63,9 +74,9 @@ The server will start on `http://localhost:8000`
 
 Here are three primary URLs used for testing:
 
-1. **https://en.wikipedia.org/wiki/Artificial_intelligence**
-2. **https://vercel.com/**
-3. **https://news.ycombinator.com/**
+1. **https://en.wikipedia.org/wiki/Artificial_intelligence** - Scrapes the comprehensive article content about artificial intelligence, including sections on history, applications, and technical details.
+2. **https://vercel.com/** - Scrapes the homepage content including product features, pricing information, and marketing copy from this modern JavaScript-rendered site.
+3. **https://news.ycombinator.com/** - Scrapes the front page news articles, story titles, links, and discussion metadata from the Hacker News community platform.
 
 ## Project Structure
 
